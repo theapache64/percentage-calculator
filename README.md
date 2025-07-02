@@ -1,23 +1,43 @@
 # Percentage Calculator - Raycast Extension
 
-A comprehensive percentage calculator for Raycast that supports multiple calculation types:
+A comprehensive percentage calculator for Raycast that provides a **Full Statistics** view with colorful card-based results. Enter any two values and get a complete breakdown of all possible percentage calculations in one go!
 
-- **Basic Percentage**: Calculate X% of Y
-- **What is X% of Y**: Interactive percentage calculation
-- **X is what % of Y**: Find what percentage one number is of another
-- **X is Y% of what**: Find the whole when you know the part and percentage
-- **Percentage Difference**: Calculate the percentage difference between two values
-- **Percentage Change**: Calculate percentage increase or decrease
+## What You Get
+
+When you enter two values (e.g., 100 and 150), the extension instantly calculates:
+
+- **Basic Percentages**: 100% of 150 = 150, and 150% of 100 = 150
+- **Percentage Ratios**: 100 is 66.67% of 150, and 150 is 150% of 100  
+- **Percentage Difference**: 40% difference between the two values
+- **Percentage Changes**: 50% increase from 100→150, and 33.33% decrease from 150→100
 
 ## Features
 
-- 🧮 Multiple calculation types in one extension
-- 📋 Copy results to clipboard
-- 📊 Clear calculation display
-- ⚡ Fast and responsive interface
-- 🎯 Accurate calculations with proper formatting
+- 🎨 **Beautiful Card Design**: Results displayed as colorful, easy-to-read cards
+- 📊 **Complete Analysis**: Get 7 different calculations from just 2 input values
+- 📋 **Smart Copy Options**: Copy individual results or all calculations at once
+- 🎯 **Intelligent Icons**: Each calculation type has its own color and icon
+- ⚡ **Instant Results**: No need to select calculation types - get everything automatically
+- 🔄 **Interactive Interface**: Easy navigation between input and results
 
-## Installation & Testing Guide
+## Installation
+
+### From Raycast Store (Recommended)
+
+1. **Install Raycast**: Download from [raycast.com](https://raycast.com)
+2. **Open Raycast Store**: 
+   - Launch Raycast (⌘ + Space)
+   - Type "Store" or click the Store tab
+3. **Search for Extension**:
+   - Search for "Percentage Calculator"
+   - Click "Install" on the extension
+4. **Start Using**: 
+   - Type "Percentage Calculator" or "perc" in Raycast
+   - Enter your two values and get instant results!
+
+### Manual Development Setup
+
+If you want to modify or contribute to the extension:
 
 ### Prerequisites
 
@@ -76,30 +96,24 @@ A comprehensive percentage calculator for Raycast that supports multiple calcula
 
 ### Usage Examples
 
-1. **Basic Percentage (25% of 200)**:
-   - Select "Basic: X% of Y = ?"
-   - Enter 25 in "Percentage"
-   - Enter 200 in "Base Value"
-   - Press ⌘ + Enter to calculate
-   - Result: 50
-
-2. **What Percentage (50 is what % of 200)**:
-   - Select "X is what % of Y?"
-   - Enter 50 in "Value 1"
-   - Enter 200 in "Value 2"
-   - Result: 25%
-
-3. **Percentage Difference (between 100 and 150)**:
-   - Select "Percentage Difference"
+1. **Quick Full Statistics**:
+   - Launch the extension
    - Enter 100 in "Value 1"
    - Enter 150 in "Value 2"
-   - Result: 40% difference
+   - Press ⌘ + Enter
+   - Get 7 different calculations instantly displayed as colorful cards
 
-4. **Percentage Change (from 100 to 150)**:
-   - Select "Percentage Change"
-   - Enter 100 in "Value 1" (old value)
-   - Enter 150 in "Value 2" (new value)
-   - Result: 50% increase
+2. **Card Results Include**:
+   - Basic percentages (100% of 150, 150% of 100)
+   - Percentage ratios (100 is 66.67% of 150, 150 is 150% of 100)
+   - Percentage difference (40% difference)
+   - Percentage changes (50% increase from 100→150, 33.33% decrease from 150→100)
+
+3. **Copy Options**:
+   - Copy individual calculation results
+   - Copy full calculation text
+   - Copy all results at once
+   - Quick clipboard access for all values
 
 ### Troubleshooting
 
