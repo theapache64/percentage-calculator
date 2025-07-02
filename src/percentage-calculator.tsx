@@ -1,4 +1,4 @@
-import { Form, ActionPanel, Action, showToast, Toast, Clipboard } from "@raycast/api";
+import { Form, ActionPanel, Action, showToast, Toast, Clipboard, List, Color, Icon } from "@raycast/api";
 import { useState } from "react";
 
 interface FormValues {
@@ -6,8 +6,17 @@ interface FormValues {
   value2: string;
 }
 
+interface CalculationResult {
+  title: string;
+  value: string;
+  subtitle: string;
+  icon: Icon;
+  color: Color;
+}
+
 export default function PercentageCalculator() {
-  const [calculation, setCalculation] = useState<string>("");
+  const [results, setResults] = useState<CalculationResult[]>([]);
+  const [showResults, setShowResults] = useState<boolean>(false);
 
   const calculateBasicPercentage = (percent: number, value: number): number => {
     return (percent / 100) * value;
@@ -34,25 +43,75 @@ export default function PercentageCalculator() {
         throw new Error("Invalid numbers");
       }
 
-      const stats = [];
+      const calculationResults: CalculationResult[] = [];
 
-      stats.push(`• ${value1}% of ${value2} = ${calculateBasicPercentage(value1, value2).toFixed(2)}`);
-      stats.push(`• ${value2}% of ${value1} = ${calculateBasicPercentage(value2, value1).toFixed(2)}`);
-      stats.push(`• ${value1} is ${calculatePercentageOf(value1, value2).toFixed(2)}% of ${value2}`);
-      stats.push(`• ${value2} is ${calculatePercentageOf(value2, value1).toFixed(2)}% of ${value1}`);
-      stats.push(`• Percentage difference: ${calculatePercentageDifference(value1, value2).toFixed(2)}%`);
+      // Basic percentage calculations
+      calculationResults.push({
+        title: `${value1}% of ${value2}`,
+        value: calculateBasicPercentage(value1, value2).toFixed(2),
+        subtitle: "Basic Percentage",
+        icon: Icon.Calculator,
+        color: Color.Blue,
+      });
 
+      calculationResults.push({
+        title: `${value2}% of ${value1}`,
+        value: calculateBasicPercentage(value2, value1).toFixed(2),
+        subtitle: "Basic Percentage",
+        icon: Icon.Calculator,
+        color: Color.Blue,
+      });
+
+      // What percentage calculations
+      calculationResults.push({
+        title: `${value1} is what % of ${value2}`,
+        value: `${calculatePercentageOf(value1, value2).toFixed(2)}%`,
+        subtitle: "Percentage Ratio",
+        icon: Icon.ArrowRight,
+        color: Color.Green,
+      });
+
+      calculationResults.push({
+        title: `${value2} is what % of ${value1}`,
+        value: `${calculatePercentageOf(value2, value1).toFixed(2)}%`,
+        subtitle: "Percentage Ratio",
+        icon: Icon.ArrowRight,
+        color: Color.Green,
+      });
+
+      // Percentage difference
+      calculationResults.push({
+        title: "Percentage Difference",
+        value: `${calculatePercentageDifference(value1, value2).toFixed(2)}%`,
+        subtitle: `Between ${value1} and ${value2}`,
+        icon: Icon.TwoArrowsClockwise,
+        color: Color.Orange,
+      });
+
+      // Percentage changes
       const change1to2 = calculatePercentageChange(value1, value2);
       const change2to1 = calculatePercentageChange(value2, value1);
       const direction1to2 = change1to2 >= 0 ? "increase" : "decrease";
       const direction2to1 = change2to1 >= 0 ? "increase" : "decrease";
 
-      stats.push(`• From ${value1} to ${value2}: ${Math.abs(change1to2).toFixed(2)}% ${direction1to2}`);
-      stats.push(`• From ${value2} to ${value1}: ${Math.abs(change2to1).toFixed(2)}% ${direction2to1}`);
+      calculationResults.push({
+        title: `From ${value1} to ${value2}`,
+        value: `${Math.abs(change1to2).toFixed(2)}% ${direction1to2}`,
+        subtitle: "Percentage Change",
+        icon: change1to2 >= 0 ? Icon.ArrowUp : Icon.ArrowDown,
+        color: change1to2 >= 0 ? Color.Green : Color.Red,
+      });
 
-      const calculationString = stats.join("\n");
+      calculationResults.push({
+        title: `From ${value2} to ${value1}`,
+        value: `${Math.abs(change2to1).toFixed(2)}% ${direction2to1}`,
+        subtitle: "Percentage Change",
+        icon: change2to1 >= 0 ? Icon.ArrowUp : Icon.ArrowDown,
+        color: change2to1 >= 0 ? Color.Green : Color.Red,
+      });
 
-      setCalculation(calculationString);
+      setResults(calculationResults);
+      setShowResults(true);
 
       showToast({
         style: Toast.Style.Success,
@@ -77,18 +136,53 @@ export default function PercentageCalculator() {
     });
   };
 
+  const copyAllResults = () => {
+    const allResults = results.map((result) => `${result.title}: ${result.value}`).join("\n");
+    copyToClipboard(allResults);
+  };
+
+  if (showResults) {
+    return (
+      <List
+        actions={
+          <ActionPanel>
+            <Action title="New Calculation" onAction={() => setShowResults(false)} />
+            <Action title="Copy All Results" onAction={copyAllResults} />
+          </ActionPanel>
+        }
+      >
+        {results.map((result, index) => (
+          <List.Item
+            key={index}
+            title={result.title}
+            subtitle={result.subtitle}
+            accessoryTitle={result.value}
+            icon={{ source: result.icon, tintColor: result.color }}
+            actions={
+              <ActionPanel>
+                <Action title="Copy Result" onAction={() => copyToClipboard(result.value)} />
+                <Action title="Copy Full Text" onAction={() => copyToClipboard(`${result.title}: ${result.value}`)} />
+                <Action title="New Calculation" onAction={() => setShowResults(false)} />
+                <Action title="Copy All Results" onAction={copyAllResults} />
+              </ActionPanel>
+            }
+          />
+        ))}
+      </List>
+    );
+  }
+
   return (
     <Form
       actions={
         <ActionPanel>
           <Action.SubmitForm title="Calculate" onSubmit={handleSubmit} />
-          {calculation && <Action title="Copy Full Calculation" onAction={() => copyToClipboard(calculation)} />}
         </ActionPanel>
       }
     >
       <Form.Description
         title="Full Statistics Calculator"
-        text="Enter two values to get a full breakdown of percentage calculations."
+        text="Enter two values to get a full breakdown of percentage calculations in beautiful cards."
       />
       <Form.Separator />
 
@@ -105,13 +199,6 @@ export default function PercentageCalculator() {
         placeholder="Enter second value"
         info="The second value for comprehensive calculations"
       />
-
-      {calculation && (
-        <>
-          <Form.Separator />
-          <Form.Description title="Full Statistics" text={calculation} />
-        </>
-      )}
     </Form>
   );
 }
